@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            policy.WithOrigins("https://gentle-river-078dc2800.2.azurestaticapps.net", "http://localhost:5173")
+            policy.WithOrigins("http://localhost:5173", "https://ecoroute-frontend-bzejh2daf3erdbdz.centralindia-01.azurewebsites.net")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
