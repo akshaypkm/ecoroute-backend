@@ -2,6 +2,7 @@ using AutoMapper;
 using EcoRoute.Data;
 using EcoRoute.Models;
 using EcoRoute.Models.Entities;
+using EcoRoute.Models.HelperClasses;
 using EcoRoute.Repositories;
 
 namespace EcoRoute.Services
@@ -24,6 +25,7 @@ namespace EcoRoute.Services
         private readonly ICreditRepository _creditRepo;
         private readonly ITruckRepository _truckRepo;
         private readonly IOrderRepository _orderRepo;
+        private readonly INotificationRepository _notifRepo; 
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IAutoApprovalService _autoApproveService;
@@ -34,7 +36,7 @@ namespace EcoRoute.Services
                             IShipmentRepository _shipmentRepo, ICreditRepository _creditRepo,
                              ITruckRepository _truckRepo,IOrderRepository _orderRepo,
                             IConfiguration _configuration, IMapper _mapper,
-                            IAutoApprovalService _autoApproveService)
+                            IAutoApprovalService _autoApproveService, INotificationRepository _notifRepo)
         {
             this._dbContext = _dbContext;
             this._userRepo = _userRepo;
@@ -44,6 +46,7 @@ namespace EcoRoute.Services
             this._creditRepo = _creditRepo;
             this._truckRepo = _truckRepo;
             this._orderRepo = _orderRepo;
+            this._notifRepo = _notifRepo;
             this._configuration = _configuration;
             this._mapper = _mapper;
             this._autoApproveService = _autoApproveService;
@@ -218,6 +221,16 @@ namespace EcoRoute.Services
             
             await _orderRepo.AddOrdersAsync(orderToDb);
             await _orderRepo.SaveChangesAsync();
+
+            var notification = new Notification
+            {
+                Message = $"Company - {orderToDb.CompanyName} has placed an order ({orderToDb.OrderCode} which is waiting for your approval.)",
+                IsRead = false,
+                TargetCompanyId = orderToDb.TransportCompanyId
+            };
+
+            await _notifRepo.AddNotificationAsync(notification);
+            await _notifRepo.SaveChangesAsync();
 
             await transaction.CommitAsync();
 

@@ -438,6 +438,15 @@ namespace EcoRoute.Services
 
                 await _companyRepo.RefundCompanyCredits(orderDto.CompanyId, refundCredits); 
                 
+                var notif = new Notification()
+                {
+                    Message = $"Your order ({orderDto.OrderCode}) from {orderDto.OrderOrigin} to {orderDto.OrderDestination} has been set to a shared shipment on {order.OrderDate.ToShortDateString()}",
+                    IsRead = false,
+                    TargetCompanyId = orderDto.CompanyId
+                };
+
+                await _notifRepo.AddNotificationAsync(notif);
+                await _notifRepo.SaveChangesAsync();
             }
 
             await _shipmentRepo.AddShipmentAsync(shipment);

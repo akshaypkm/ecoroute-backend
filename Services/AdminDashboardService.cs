@@ -1,5 +1,6 @@
 using EcoRoute.Models.DTOs;
 using EcoRoute.Models.Entities;
+using EcoRoute.Models.HelperClasses;
 using EcoRoute.Repositories;
 
 namespace EcoRoute.Services
@@ -8,6 +9,8 @@ namespace EcoRoute.Services
     public interface IAdminDashboardService
     {
         Task<AdminDashboardDto> GetDashboardStat(string userIdFromToken, string EmissionsPeriod, string ShipmentsPeriod, string EmissionsSavedPeriod);
+
+        Task<List<Notification>> GetNotifications(string userIdFromToken);
     }
     public class AdminDashboardService : IAdminDashboardService
     {
@@ -15,14 +18,17 @@ namespace EcoRoute.Services
         private readonly IShipmentRepository _shipmentRepo;
         private readonly IOrderRepository _orderRepo;
         private readonly ICompanyRepository _companyRepo;
+        private readonly INotificationRepository _notifRepo;
 
         public AdminDashboardService(IEmissionRepository _emissionRepo, IShipmentRepository _shipmentRepo,
-                                    IOrderRepository _orderRepo, ICompanyRepository _companyRepo)
+                                    IOrderRepository _orderRepo, ICompanyRepository _companyRepo,
+                                    INotificationRepository _notifRepo)
         {
             this._emissionRepo = _emissionRepo;
             this._shipmentRepo = _shipmentRepo;
             this._orderRepo = _orderRepo;
             this._companyRepo = _companyRepo;
+            this._notifRepo = _notifRepo;
         }
         public async Task<AdminDashboardDto> GetDashboardStat(string userIdFromToken, string EmissionsPeriod, string ShipmentsPeriod, string EmissionsSavedPeriod)
         {
@@ -107,5 +113,15 @@ namespace EcoRoute.Services
 
             return adminDashDto;
         }
+
+        public async Task<List<Notification>> GetNotifications(string userIdFromToken)
+        {
+            var transportCompanyId = await _companyRepo.GetCompanyIdByUserId(userIdFromToken);
+
+            var notifs = await _notifRepo.GetNotificationsByCompanyIdAsync(transportCompanyId);
+
+            return notifs;
+        }
+
     }
 }

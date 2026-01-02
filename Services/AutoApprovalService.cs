@@ -78,6 +78,17 @@ namespace EcoRoute.Services
 
                 await transaction.CommitAsync();
             }
+
+            var notificationAdmin = new Notification()
+            {
+                Message = $"{orders.Count} orders were found to match the criteria for auto-approval and have been auto approved.",
+                IsRead = false,
+                TargetCompanyId = transportCompanyId                    
+            };
+
+            await _notifRepo.AddNotificationAsync(notificationAdmin);
+            await _notifRepo.SaveChangesAsync();
+            
         }
     }
 }
