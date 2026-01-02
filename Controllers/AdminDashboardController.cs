@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using EcoRoute.Data;
+using EcoRoute.Models.HelperClasses;
 using EcoRoute.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,5 +35,20 @@ namespace EcoRoute.Controllers
 
             return Ok(adminDashDto);
         } 
+
+        [HttpGet("notifications")]
+        public async Task<ActionResult<List<Notification>>> GetNotifications()
+        {
+            var userIdFromToken = User.FindFirst(ClaimTypes.Name)?.Value;
+
+            if(userIdFromToken == null)
+            {
+                return BadRequest("User does not exist");
+            }
+
+            var notifs = await _adminDashboardService.GetNotifications(userIdFromToken);
+
+            return notifs;
+        }
     }
 }
