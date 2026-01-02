@@ -16,7 +16,7 @@ namespace EcoRoute.Utils
         public RouteOptimizationService(IConfiguration config)
         {
             _http = new HttpClient();
-            _apiKey = config.GetConnectionString("GoogleAPIKey");
+            _apiKey = config["Google:MapsApiKey"];
         }
 
         public async Task<OptimizedRouteResultDto> GenerateOptimizedRoute(List<OrderDto> orders)

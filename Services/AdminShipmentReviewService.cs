@@ -130,7 +130,7 @@ namespace EcoRoute.Services
 
         public async Task<List<ImproviseShipmentGroupDto>> ImproviseShipments(List<OrderDto> orderDtos)
         {
-            var API_KEY = _config.GetConnectionString("GoogleAPIKey");
+            var API_KEY = _config["Google:MapsApiKey"];
             var gms = new GoogleMapsService(API_KEY);
 
             var optimizedGroups = new List<ImproviseShipmentGroupDto>();

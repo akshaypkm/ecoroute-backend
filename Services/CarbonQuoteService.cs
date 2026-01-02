@@ -56,7 +56,7 @@ namespace EcoRoute.Services
         {
             var companyId = await _companyRepo.GetCompanyIdByName(companyName);
 
-            var API_KEY = _configuration.GetConnectionString("GoogleAPIKey");
+            var API_KEY = _configuration["Google:MapsApiKey"];
             string orderOrigin = orderRequestDto.OrderOrigin;
             string orderDestination = orderRequestDto.OrderDestination;
 
