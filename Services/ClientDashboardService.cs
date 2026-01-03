@@ -23,6 +23,9 @@ namespace EcoRoute.Services
 
         public Task<(bool Success, string Message)> BuyCredits(string companyName, BuyCreditDto buyCreditDto);
         public Task<List<Notification>> ShowNotifications(string companyName);
+
+        public Task MarkNotificationsAsRead(string companyName);
+        public Task<int> GetUnreadNotificationCount(string companyName);
     }
 
     public class ClientDashboardService : IClientDashboardService
@@ -362,6 +365,23 @@ namespace EcoRoute.Services
             int companyId = await _companyRepo.GetCompanyIdByName(companyName);
 
             return await _notificationRepo.GetNotificationsByCompanyIdAsync(companyId);
+        }
+
+        public async Task MarkNotificationsAsRead(string companyName)
+        {
+            int companyId = await _companyRepo.GetCompanyIdByName(companyName);
+            var unreadNotifications = await _notificationRepo
+            .GetUnreadNotificationsByCompanyIdAsync(companyId);
+            foreach (var notif in unreadNotifications)
+            {
+                notif.IsRead = true;
+            }
+            await _notificationRepo.SaveChangesAsync();
+        }
+        public async Task<int> GetUnreadNotificationCount(string companyName)
+        {
+            int companyId = await _companyRepo.GetCompanyIdByName(companyName);
+            return await _notificationRepo.GetUnreadCountByCompanyIdAsync(companyId);
         }
     }
 }

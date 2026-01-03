@@ -48,7 +48,7 @@ public class EmailService : IEmailService
               <br/>
               <p>Best regards,<br/>
               <strong>EcoRoute Team</strong><br/>
-              <a href='https://gentle-river-078dc2800.2.azurestaticapps.net/' target='_blank'>www.ecoroute.com</a></p>
+              <a href='https://ecoroute-awbqb6fabqapethx.centralindia-01.azurewebsites.net/' target='_blank'>www.ecoroute.com</a></p>
               <hr/>
               <p style='font-size: 12px; color: #999;'>If you did not request this, please ignore this email.</p>
             </div>"

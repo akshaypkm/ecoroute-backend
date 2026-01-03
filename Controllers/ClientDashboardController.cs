@@ -146,6 +146,27 @@ namespace EcoRoute.Controllers
             return notifications;
         } 
 
+        [HttpPost("notifications/mark-seen")]
+        public async Task<IActionResult> MarkNotificationsAsRead()
+        {
+            var companyName = User.FindFirst("CompanyName")?.Value;
+            if (companyName == null){
+                return Unauthorized();
+            }
+            await _clientDashboardService.MarkNotificationsAsRead(companyName);
+            return Ok();
+        }
+        [HttpGet("notifications/unread-count")]
+        public async Task<ActionResult<int>> GetUnreadNotificationCount()
+        {
+            var companyName = User.FindFirst("CompanyName")?.Value;
+            if (companyName == null){
+                return Unauthorized();
+            }
+            int count = await _clientDashboardService.GetUnreadNotificationCount(companyName);
+            return Ok(count);
+        }
+
         // [HttpGet("forecast")]
         // public async Task<ActionResult<ForecastDto>> GetCompanyForecast()
         // {
