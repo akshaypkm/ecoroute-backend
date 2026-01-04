@@ -420,6 +420,7 @@ namespace EcoRoute.Services
                 ShipmentCO2Emission = groupDto.TotalShipmentCO2Emissions,
                 ShipmentMode = "shared",
                 TransportCompanyId = groupDto.TransportCompanyId,
+                ShipmentApprovedDate = DateTime.Today,
 
                 OrderList = new List<Order>()
             };

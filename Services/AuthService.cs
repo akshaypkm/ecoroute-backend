@@ -33,7 +33,9 @@ namespace EcoRoute.Services;
         Task<(bool Success, string Message)> VerifyOtpAsync(string email, string otp);
         Task<(bool Success,string Message)> ForgotSendOtpAsync(string email);
         Task<(bool Success,string Message)> ForgotVerifyOtpAsync(string email, string otp);
-        Task<(bool Success,string Message)> ResetPasswordAsync(string email, string newPassword);   
+        Task<(bool Success,string Message)> ResetPasswordAsync(string email, string newPassword);  
+
+        Task<List<string>> GetCompanyNames(); 
 
     }
     public class AuthService : IAuthService
@@ -356,6 +358,11 @@ namespace EcoRoute.Services;
             await _userRepo.UpdateUserAsync(user);
             await _otpRepo.DeleteOtpsByEmailAsync(email);
             return (true, "Password reset successfully");
+        }
+
+        public async Task<List<string>> GetCompanyNames()
+        {
+            return await _companyRepo.GetAdminCompanyNames();
         }
     
 

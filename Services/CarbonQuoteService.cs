@@ -195,6 +195,7 @@ namespace EcoRoute.Services
 
         public async Task<(bool Success, string Message)> PlaceOrder(string companyName, OrderDto orderDto)
         {
+            await ResetMonthlyCreditsIfNeededAsync();
             
             int companyId = await _companyRepo.GetCompanyIdByName(companyName);
 
@@ -305,6 +306,41 @@ namespace EcoRoute.Services
             var res = await _companyRepo.GetTransportProviders();
 
             return res;
+        }
+
+        public async Task ResetMonthlyCreditsIfNeededAsync()
+        {
+            var now = DateTime.UtcNow;
+
+            int currentYear = now.Year;
+            int currentMonth = now.Month;
+
+            bool anyReset = false;
+
+            var companies = await _companyRepo.GetAllCompanies();
+
+            foreach(var company in companies)
+            {
+                
+                bool needsReset = company.LastCreditResetYear != currentYear || company.LastCreditResetMonth != currentMonth;
+
+                if(needsReset == false)
+                {
+                    continue;
+                }
+
+                company.RemainingCredits = company.CompanyCredits / 12;
+                company.LastCreditResetYear = currentYear;
+                company.LastCreditResetMonth = currentMonth;
+
+                anyReset = true;
+
+            }
+
+            if (anyReset)
+            {
+                await _companyRepo.SaveChangesAsync();
+            }
         }
     }
 }

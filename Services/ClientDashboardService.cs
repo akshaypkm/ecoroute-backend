@@ -71,13 +71,15 @@ namespace EcoRoute.Services
             DateTime EmissionsSavedStartDate;
             DateTime EmissionsSavedEndDate = DateTime.Now;
 
-            DateTime GraphYearStart = new(DateTime.Now.Year,1,1);
-            DateTime GraphNowDate = DateTime.Now;
+            var _now = DateTime.Today;
+            DateTime GraphNowDate = _now;
+            DateTime GraphYearStart = new DateTime(_now.Year, _now.Month, 1).AddMonths(-11);
 
             switch (EmissionPeriod.ToLower())
             {
-                case "year":
-                    EmissionStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    EmissionStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     EmissionStartDate = DateTime.Today;
@@ -90,8 +92,9 @@ namespace EcoRoute.Services
 
             switch (ShipmentPeriod.ToLower())
             {
-                case "year":
-                    ShipmentStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    ShipmentStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     ShipmentStartDate = DateTime.Today;
@@ -104,8 +107,9 @@ namespace EcoRoute.Services
 
             switch (EmissionsSavedPeriod.ToLower())
             {
-                case "year":
-                    EmissionsSavedStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    EmissionsSavedStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     EmissionsSavedStartDate = DateTime.Today;
@@ -135,9 +139,16 @@ namespace EcoRoute.Services
             
             double[] finalGraphData = new double[12];
 
-            foreach(var rd in rawData)
+            for (int i = 0; i < 12; i++)
             {
-                finalGraphData[rd.Month - 1] = rd.TotalEmissions;
+                var monthDate = GraphYearStart.AddMonths(i);
+
+                var match = rawData.FirstOrDefault(r =>
+                    r.Year == monthDate.Year &&
+                    r.Month == monthDate.Month
+                );
+
+                finalGraphData[i] = match?.TotalEmissions ?? 0;
             }
 
             var returnDto = new ClientDashboardDto{
@@ -153,6 +164,10 @@ namespace EcoRoute.Services
                 CompanyEmissionBudget = company.CompanyEmissionBudget,
                 RemainingCredits = company.RemainingCredits
             };
+
+            Console.WriteLine($"THIS IS THE COMPANY CREDITS VALUE FROM THE FUNCTION ----------{await ThisMonthCompanyCredits(company)}");
+            Console.WriteLine($"THIS IS THE REMAINING CREDITS VALUE  ----------{company.RemainingCredits}");
+
 
             return (true, "stats retrieved successfully", returnDto);
         }
@@ -251,8 +266,9 @@ namespace EcoRoute.Services
             {
                 marketPressure = marketDeficitTonnes / marketSupplyTonnes;
             }
-
+            Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET PRESSURE : {marketPressure}");
             double creditMarketPrice = basePrice * marketPressure;
+            Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET PRICE : {creditMarketPrice}");
 
             if(creditMarketPrice > maxPrice)
             {
@@ -287,7 +303,7 @@ namespace EcoRoute.Services
 
             var creditMarketPrice = await GetCreditMarketPrice();
 
-            company.CompanyCredits -= saleUnits;
+            company.RemainingCredits -= saleUnits;
             
             var creditListing = new CreditListing
             {
@@ -335,7 +351,7 @@ namespace EcoRoute.Services
 
             tradedCredit.BuyerCompanyId = company.Id;
 
-            company.CompanyCredits += buyCreditDto.UnitsBought;
+            company.RemainingCredits += buyCreditDto.UnitsBought;
 
             var notification = new Notification(){
                 Message = $"Your listed credits of Id: {buyCreditDto.SaleUnitId} - {buyCreditDto.UnitsBought} units are bought by company - {company.CompanyName}",

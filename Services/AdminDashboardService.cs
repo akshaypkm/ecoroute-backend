@@ -46,13 +46,15 @@ namespace EcoRoute.Services
             DateTime EmissionsSavedStartDate;
             DateTime EmissionsSavedEndDate = DateTime.Now;
 
-            DateTime GraphYearStart = new(DateTime.Now.Year,1,1);
-            DateTime GraphNowDate = DateTime.Now;
+            var _now = DateTime.Today;
+            DateTime GraphNowDate = _now;
+            DateTime GraphYearStart = new DateTime(_now.Year, _now.Month, 1).AddMonths(-11);
 
             switch (EmissionsPeriod.ToLower())
             {
-                case "year":
-                    EmissionsStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    EmissionsStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     EmissionsStartDate = DateTime.Today;
@@ -65,8 +67,9 @@ namespace EcoRoute.Services
 
             switch (ShipmentsPeriod.ToLower())
             {
-                case "year":
-                    ShipmentStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    ShipmentStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     ShipmentStartDate = DateTime.Today;
@@ -79,8 +82,9 @@ namespace EcoRoute.Services
 
             switch (EmissionsSavedPeriod.ToLower())
             {
-                case "year":
-                    EmissionsSavedStartDate = new DateTime(DateTime.Now.Year, 1, 1);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    EmissionsSavedStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
                     break;
                 case "today":
                     EmissionsSavedStartDate = DateTime.Today;
@@ -95,9 +99,16 @@ namespace EcoRoute.Services
 
             double[] finalGraphData = new double[12];
 
-            foreach(var rd in rawData)
+            for (int i = 0; i < 12; i++)
             {
-                finalGraphData[rd.Month - 1] = rd.TotalEmissions;
+                var monthDate = GraphYearStart.AddMonths(i);
+
+                var match = rawData.FirstOrDefault(r =>
+                    r.Year == monthDate.Year &&
+                    r.Month == monthDate.Month
+                );
+
+                finalGraphData[i] = match?.TotalEmissions ?? 0;
             }
 
 
