@@ -63,7 +63,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Companies");
+                    b.ToTable("Companies", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.CompanyName", b =>
@@ -80,7 +80,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CompanyNames");
+                    b.ToTable("CompanyNames", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.Credit", b =>
@@ -100,7 +100,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Credits");
+                    b.ToTable("Credits", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.CreditListing", b =>
@@ -136,7 +136,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CreditListings");
+                    b.ToTable("CreditListings", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.EmailOtp", b =>
@@ -163,7 +163,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("EmailOtps");
+                    b.ToTable("EmailOtps", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.Order", b =>
@@ -273,7 +273,7 @@ namespace EcoRoute.Migrations
 
                     b.HasIndex("ShipmentId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.Shipment", b =>
@@ -338,7 +338,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Shipments");
+                    b.ToTable("Shipments", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.TruckType", b =>
@@ -382,7 +382,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TruckTypes");
+                    b.ToTable("TruckTypes", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.User", b =>
@@ -418,7 +418,7 @@ namespace EcoRoute.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.HelperClasses.Notification", b =>
@@ -446,7 +446,7 @@ namespace EcoRoute.Migrations
 
                     b.HasIndex("TargetCompanyId");
 
-                    b.ToTable("Notifications");
+                    b.ToTable("Notifications", (string)null);
                 });
 
             modelBuilder.Entity("EcoRoute.Models.Entities.Order", b =>
@@ -461,7 +461,7 @@ namespace EcoRoute.Migrations
                         .WithMany("OrderList")
                         .HasForeignKey("ShipmentId");
 
-                    b.OwnsOne("EcoRoute.Models.RoutePoint", "DestinationRP", b1 =>
+                    b.OwnsOne("EcoRoute.Models.Entities.Order.DestinationRP#EcoRoute.Models.RoutePoint", "DestinationRP", b1 =>
                         {
                             b1.Property<int>("OrderId")
                                 .HasColumnType("int");
@@ -476,13 +476,13 @@ namespace EcoRoute.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
                         });
 
-                    b.OwnsOne("EcoRoute.Models.RoutePoint", "OriginRP", b1 =>
+                    b.OwnsOne("EcoRoute.Models.Entities.Order.OriginRP#EcoRoute.Models.RoutePoint", "OriginRP", b1 =>
                         {
                             b1.Property<int>("OrderId")
                                 .HasColumnType("int");
@@ -497,7 +497,7 @@ namespace EcoRoute.Migrations
 
                             b1.HasKey("OrderId");
 
-                            b1.ToTable("Orders");
+                            b1.ToTable("Orders", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("OrderId");
