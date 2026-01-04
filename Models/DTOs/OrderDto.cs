@@ -66,5 +66,7 @@ namespace EcoRoute.Models
         public int? ShipmentId{get; set;}
 
         public bool IsRender{get; set;}
+
+        public double CompanyRemainingCredits{get; set;}
     }
 }

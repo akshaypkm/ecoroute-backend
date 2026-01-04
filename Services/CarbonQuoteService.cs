@@ -178,7 +178,7 @@ namespace EcoRoute.Services
                     orderDto.OriginRP = densePointsWithCoors.OriginRP;
                     orderDto.DestinationRP = densePointsWithCoors.DestinationRP;
                     orderDto.CompanyName = await _companyRepo.GetCompanyNameById(companyId);
-                    
+                    orderDto.CompanyRemainingCredits = await _companyRepo.GetCompanyRemainingCredits(companyId);
 
                     routeIndex++;
 

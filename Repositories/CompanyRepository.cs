@@ -36,6 +36,8 @@ namespace EcoRoute.Repositories
         Task<List<string>> GetAdminCompanyNames();
 
         Task<List<Company>> GetAllCompanies();
+
+        Task<double> GetCompanyRemainingCredits(int companyId);
         
     }
     public class CompanyRepository : ICompanyRepository
@@ -148,6 +150,11 @@ namespace EcoRoute.Repositories
         public async Task<List<Company>> GetAllCompanies()
         {
             return await dbContext.Companies.ToListAsync();
+        }
+
+        public async Task<double> GetCompanyRemainingCredits(int companyId)
+        {
+            return await dbContext.Companies.Where(c => c.Id == companyId).Select(c => c.RemainingCredits).FirstOrDefaultAsync();
         }
 
     }

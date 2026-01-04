@@ -34,9 +34,10 @@ namespace EcoRoute.Services
 
             switch (OrderPeriod.ToLower())
             {
-                case "year":
-                    OrderStartDate = new DateTime(DateTime.Now.Year, 1, 1);
-                    OrderEndDate = new DateTime(DateTime.Now.Year, 12, 31, 23, 59, 59);
+                case "past 12 months":
+                    var now = DateTime.Today;
+                    OrderStartDate = new DateTime(now.Year, now.Month, 1).AddMonths(-11);
+                    OrderEndDate = DateTime.Now;
                     break;
                 case "day":
                     OrderStartDate = DateTime.Today;
