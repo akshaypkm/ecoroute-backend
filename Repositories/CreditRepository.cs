@@ -34,7 +34,7 @@ namespace EcoRoute.Repositories
             var companyStandings = await dbContext.Companies.Select(c => new
             {
                 RemainingCredits = c.RemainingCredits,
-                MonthlyPlanned = c.CompanyCredits,
+                MonthlyPlanned = c.CompanyCredits / 12,
                 ActualEmissions = dbContext.Orders.Where(o => o.CompanyId == c.Id
                                         && o.OrderStatus == "placed" 
                                         && o.OrderDate >= startOfMonth

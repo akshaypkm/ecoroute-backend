@@ -60,7 +60,7 @@ namespace EcoRoute.Repositories
 
         public async Task<int> GetAdminDashTotalShipments(int TransportCompanyId, DateTime ShipmentStartDate, DateTime ShipmentEndDate)
         {
-            return await dbContext.Shipments.Where(s => s.TransportCompanyId == TransportCompanyId && s.ShipmentDate >= ShipmentStartDate && s.ShipmentDate <= ShipmentEndDate).CountAsync();
+            return await dbContext.Shipments.Where(s => s.TransportCompanyId == TransportCompanyId && s.ShipmentApprovedDate >= ShipmentStartDate && s.ShipmentApprovedDate <= ShipmentEndDate).CountAsync();
         }
 
         public async Task<int> GetSoFarReviewedShipmentCount(int TransportCompanyId)
@@ -98,7 +98,7 @@ namespace EcoRoute.Repositories
                 Vehicle = orderDto.TransportVehicle,
                 ShipmentMode = "dedicated",
                 TransportCompanyId = orderDto.TransportCompanyId,
-                
+                ShipmentApprovedDate = DateTime.Today                
             };
             Console.WriteLine($"++++++++++++++++++COMPANY ID IN ORDERDTO: {orderDto.CompanyId}");
 

@@ -59,7 +59,7 @@ namespace EcoRoute.Repositories
         // METHODS FOR ADMIN
         public async Task<int>  GetAdminDashTotalOrdersForReview(int TransportCompanyId)
         {
-            return await dbContext.Orders.Where(o => o.TransportCompanyId == TransportCompanyId && o.OrderStatus == "processing").CountAsync();
+            return await dbContext.Orders.Where(o => o.TransportCompanyId == TransportCompanyId && (o.OrderStatus == "processing" || o.OrderStatus == "planned")).CountAsync();
         }
 
         public async Task ChangeOrderStatus(int orderId, string status)

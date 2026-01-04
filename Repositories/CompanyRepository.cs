@@ -32,6 +32,10 @@ namespace EcoRoute.Repositories
         Task<int> GetCompanyIdByUserId(string userIdFromToken);
 
         Task<List<string>> GetTransportProviders();
+
+        Task<List<string>> GetAdminCompanyNames();
+
+        Task<List<Company>> GetAllCompanies();
         
     }
     public class CompanyRepository : ICompanyRepository
@@ -134,5 +138,17 @@ namespace EcoRoute.Repositories
                                                         .OrderBy(name => name)
                                                             .ToListAsync();
         }
+
+        public async Task<List<string>> GetAdminCompanyNames()
+        {
+            return await dbContext.CompanyNames.Select(c => c.CompName).ToListAsync();
+        }
+
+
+        public async Task<List<Company>> GetAllCompanies()
+        {
+            return await dbContext.Companies.ToListAsync();
+        }
+
     }
 }

@@ -51,12 +51,14 @@ namespace EcoRoute.Repositories
         {
             return await dbContext.Orders.Where(o => o.CompanyId == companyId && o.OrderStatus == "placed"
                                                 && o.OrderDate>= GraphYearStart && o.OrderDate <= GraphNowDate)
-                                                    .GroupBy(o => o.OrderDate.Month)
+                                                    .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month })
                                                         .Select(s => new MonthlyEmissionStatDto
                                                         {
-                                                            Month = s.Key,
+                                                            Year = s.Key.Year,
+                                                            Month = s.Key.Month,
                                                             TotalEmissions = s.Sum(s => s.OrderCO2Emission)
-                                                        }).OrderBy(o => o.Month).ToListAsync();
+                                                        }).OrderBy(x => x.Year)
+                                                            .ThenBy(x => x.Month).ToListAsync();
         }
 
 
@@ -87,31 +89,32 @@ namespace EcoRoute.Repositories
         public async Task<double> GetAdminDashTotalEmissions(int TransportCompanyId, DateTime EmissionsStartDate, DateTime EmissionsEndDate)
         {
             return await dbContext.Shipments.Where(o => o.TransportCompanyId == TransportCompanyId &&
-                                             o.ShipmentDate >= EmissionsStartDate
-                                            && o.ShipmentDate <= EmissionsEndDate)
+                                             o.ShipmentApprovedDate >= EmissionsStartDate
+                                            && o.ShipmentApprovedDate <= EmissionsEndDate)
                                             .SumAsync(o => o.ShipmentCO2Emission);
         }
 
         public async Task<double> GetAdminDashTotalEmissionsSaved(int TransportCompanyId, DateTime EmissionsSavedStartDate, DateTime EmissionsSavedEndDate)
         {
             return await dbContext.Orders.Where(o => o.TransportCompanyId == TransportCompanyId && o.OrderStatus == "placed"
-                                           && o.OrderDate >= EmissionsSavedStartDate
-                                           && o.OrderDate <= EmissionsSavedEndDate)
+                                           && o.Shipment.ShipmentApprovedDate >= EmissionsSavedStartDate
+                                           && o.Shipment.ShipmentApprovedDate <= EmissionsSavedEndDate)
                                            .SumAsync(o => o.OrderStandardCO2Emissions - o.OrderCO2Emission);
         }
 
         public async Task<IEnumerable<MonthlyEmissionStatDto>> GetAdminDashGraphEmissionsData(int TransportCompanyId, DateTime GraphYearStart, DateTime GraphNowDate)
         {
             return await dbContext.Shipments.Where(s => s.TransportCompanyId == TransportCompanyId &&
-                                                s.ShipmentDate >= GraphYearStart
-                                                    && s.ShipmentDate <= GraphNowDate)
-                                                        .GroupBy(s => s.ShipmentDate.Month)
+                                                s.ShipmentApprovedDate >= GraphYearStart
+                                                    && s.ShipmentApprovedDate <= GraphNowDate)
+                                                        .GroupBy(s => new { s.ShipmentApprovedDate.Year, s.ShipmentApprovedDate.Month })
                                                             .Select(s => new MonthlyEmissionStatDto
                                                             {
-                                                                Month = s.Key,
+                                                                Year = s.Key.Year,
+                                                                Month = s.Key.Month,
                                                                 TotalEmissions = s.Sum(s => s.ShipmentCO2Emission)
-                                                            }).OrderBy(s => s.Month).ToListAsync();
-
+                                                            }).OrderBy(g => g.Year)
+                                                                    .ThenBy(g => g.Month).ToListAsync();
         }
     }
 }
