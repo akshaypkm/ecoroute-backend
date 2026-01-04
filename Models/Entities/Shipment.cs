@@ -13,6 +13,7 @@ namespace EcoRoute.Models.Entities
         public double ShipmentCO2Emission{get; set;}
 
         public DateTime ShipmentDate{get; set;} = DateTime.Now;
+        public DateTime ShipmentApprovedDate{get; set;} = DateTime.Today;
 
         public int ShipmentTotalItems{get; set;}
 

@@ -22,6 +22,9 @@ namespace EcoRoute.Models.Entities
 
         public string? CompanySector{get; set;}
 
+        public int LastCreditResetYear { get; set; }
+        public int LastCreditResetMonth { get; set; }
+
         public List<Order> OrderList{get; set;} = new List<Order>();
     }
 }
