@@ -90,5 +90,11 @@ namespace EcoRoute.Controllers
             var res = await _authService.ResetPasswordAsync(dto.Email, dto.NewPassword);
             return res.Success ? Ok(res.Message) : BadRequest(res.Message);
         }
+
+        [HttpGet("get-companynames")]
+        public async Task<List<string>> GetCompanyNames()
+        {
+            return await _authService.GetCompanyNames();
+        }
     }
 }
