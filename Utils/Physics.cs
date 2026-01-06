@@ -55,7 +55,6 @@ namespace EcoRoute.Services
             {
                 densePoints[densePoints.Count - 1].DeltaH = 0.0; 
                 densePoints[densePoints.Count - 1].SegmentMeters = 0.0; 
-                //WHY IS THIS PERFORMED ?
             }
 
             double totalJ_per_tonne = 0.0;
@@ -90,11 +89,10 @@ namespace EcoRoute.Services
             double totalLiters_per_tonne = totalJ_per_tonne / (LHV_DIESEL_J_PER_L * ENGINE_EFF);
             double totalKgCO2_per_tonne = totalLiters_per_tonne * CO2_PER_L;
 
-            // Also compute scaled per-truck (massPerTonne factor included already in J calc if massPerTonne != 1000)
-            // For clarity, return both per-tonne and also "per-truck contribution per tonne basis"
+            
             double totalKgCO2_per_truck_kg_per_tonne = totalKgCO2_per_tonne; // same numeric; caller knows massPerTonne used
 
-            // WHAT IS THE ABOVE THING
+            
 
             return (totalKgCO2_per_truck_kg_per_tonne, totalJ_per_tonne
                 , totalLiters_per_tonne, totalKgCO2_per_tonne);

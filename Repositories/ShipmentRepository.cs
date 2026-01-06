@@ -40,8 +40,10 @@ namespace EcoRoute.Repositories
 
         public async Task<int> GetTotalShipmentsCompanyAndDateWise(int companyId, DateTime ShipmentStartDate, DateTime ShipmentEndDate)
         {
-            return await dbContext.Shipments.Where(s => s.OrderList.Any(o => o.CompanyId == companyId) 
-                                            && s.ShipmentDate >= ShipmentStartDate && s.ShipmentDate <= ShipmentEndDate).CountAsync();
+
+            return await dbContext.Orders.Where(o => o.CompanyId == companyId && 
+                                                    o.OrderDate >= ShipmentStartDate && o.OrderDate < ShipmentEndDate &&
+                                                         o.OrderStatus == "placed").CountAsync();
         }
 
         public async Task<string> GetShipmentCodeByShipmentId(int shipmentId)

@@ -72,7 +72,8 @@ namespace EcoRoute.Services
             DateTime EmissionsSavedEndDate = DateTime.Now;
 
             var _now = DateTime.Today;
-            DateTime GraphNowDate = _now;
+            DateTime CurrentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+            DateTime GraphNowDate = CurrentMonth.AddMonths(1).AddDays(-1);
             DateTime GraphYearStart = new DateTime(_now.Year, _now.Month, 1).AddMonths(-11);
 
             switch (EmissionPeriod.ToLower())
@@ -87,6 +88,7 @@ namespace EcoRoute.Services
                 case "month":
                 default:
                     EmissionStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    EmissionEndDate   = EmissionStartDate.AddMonths(1).AddDays(-1);
                     break;
             }
 
@@ -102,6 +104,7 @@ namespace EcoRoute.Services
                 case "month":
                 default:
                     ShipmentStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    ShipmentEndDate = ShipmentStartDate.AddMonths(1).AddDays(-1);
                     break;
             }
 
@@ -117,6 +120,7 @@ namespace EcoRoute.Services
                 case "month":
                 default:
                     EmissionsSavedStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                    EmissionsSavedEndDate = EmissionsSavedStartDate.AddMonths(1).AddDays(-1);
                     break;
             }      
 
@@ -298,7 +302,7 @@ namespace EcoRoute.Services
             {
                 return (false,"Low credit balance for the given request!");
             }
-
+    
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             var creditMarketPrice = await GetCreditMarketPrice();
