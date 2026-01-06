@@ -294,7 +294,7 @@ namespace EcoRoute.Services
             var company = await _companyRepo.GetCompanyByNameAsync(companyName);
 
             int companyId = await _companyRepo.GetCompanyIdByName(companyName);
-            if(saleUnits >= company.CompanyCredits)
+            if(saleUnits >= company.RemainingCredits)
             {
                 return (false,"Low credit balance for the given request!");
             }
