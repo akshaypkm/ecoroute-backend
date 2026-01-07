@@ -83,28 +83,56 @@ namespace EcoRoute.Services
         private static double ToRad(double deg) => deg * Math.PI / 180.0;
         private static double ToDeg(double rad) => rad * 180.0 / Math.PI;
 
-        private static (double Lat, double Lng) IntermediateGreatCircle((double Lat, double Lng) a, (double Lat, double Lng) b, double f)
+        private static (double Lat, double Lng) IntermediateGreatCircle(
+            (double Lat, double Lng) start,
+            (double Lat, double Lng) end,
+            double fraction)
         {
-            double φ1 = ToRad(a.Lat), λ1 = ToRad(a.Lng);
-            double φ2 = ToRad(b.Lat), λ2 = ToRad(b.Lng);
+            double lat1 = ToRad(start.Lat);
+            double lon1 = ToRad(start.Lng);
+            double lat2 = ToRad(end.Lat);
+            double lon2 = ToRad(end.Lng);
 
-            double cosφ1 = Math.Cos(φ1), cosφ2 = Math.Cos(φ2), sinφ1 = Math.Sin(φ1), sinφ2 = Math.Sin(φ2);
-            double Δ = 2.0 * Math.Asin(Math.Min(1.0, Math.Sqrt(Math.Pow(Math.Sin((φ2 - φ1) / 2.0), 2) +
-                                                  cosφ1 * cosφ2 * Math.Pow(Math.Sin((λ2 - λ1) / 2.0), 2))));
-            if (Δ < 1e-12) return (a.Lat, a.Lng);
+            double cosLat1 = Math.Cos(lat1);
+            double cosLat2 = Math.Cos(lat2);
+            double sinLat1 = Math.Sin(lat1);
+            double sinLat2 = Math.Sin(lat2);
 
-            double A = Math.Sin((1 - f) * Δ) / Math.Sin(Δ);
-            double B = Math.Sin(f * Δ) / Math.Sin(Δ);
+            double delta = 2.0 * Math.Asin(
+                Math.Min(
+                    1.0,
+                    Math.Sqrt(
+                        Math.Pow(Math.Sin((lat2 - lat1) / 2.0), 2) +
+                        cosLat1 * cosLat2 *
+                        Math.Pow(Math.Sin((lon2 - lon1) / 2.0), 2)
+                    )
+                )
+            );
 
-            double x = A * cosφ1 * Math.Cos(λ1) + B * cosφ2 * Math.Cos(λ2);
-            double y = A * cosφ1 * Math.Sin(λ1) + B * cosφ2 * Math.Sin(λ2);
-            double z = A * sinφ1 + B * sinφ2;
+            if (delta < 1e-12)
+                return (start.Lat, start.Lng);
 
-            double φi = Math.Atan2(z, Math.Sqrt(x * x + y * y));
-            double λi = Math.Atan2(y, x);
+            double factorA = Math.Sin((1 - fraction) * delta) / Math.Sin(delta);
+            double factorB = Math.Sin(fraction * delta) / Math.Sin(delta);
 
-            return (ToDeg(φi), ToDeg(λi));
+            double x =
+                factorA * cosLat1 * Math.Cos(lon1) +
+                factorB * cosLat2 * Math.Cos(lon2);
+
+            double y =
+                factorA * cosLat1 * Math.Sin(lon1) +
+                factorB * cosLat2 * Math.Sin(lon2);
+
+            double z =
+                factorA * sinLat1 +
+                factorB * sinLat2;
+
+            double interpolatedLat = Math.Atan2(z, Math.Sqrt(x * x + y * y));
+            double interpolatedLon = Math.Atan2(y, x);
+
+            return (ToDeg(interpolatedLat), ToDeg(interpolatedLon));
         }
+
     }
 
     public class DensePoint
