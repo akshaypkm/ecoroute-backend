@@ -31,7 +31,7 @@ namespace EcoRoute.Repositories
             var startofNextMonth = startOfMonth.AddMonths(1);
 
             int monthNumber = now.Month;
-            var companyStandings = await dbContext.Companies.Select(c => new
+            var companyStandings = await dbContext.Companies.Where(c => c.CompanyCredits > 0).Select(c => new
             {
                 RemainingCredits = c.RemainingCredits,
                 MonthlyPlanned = c.CompanyCredits / 12,
@@ -47,7 +47,8 @@ namespace EcoRoute.Repositories
 
             foreach(var item in companyStandings)
             {
-                double balance = item.MonthlyPlanned - item.ActualEmissions;
+                Console.WriteLine($"Monthly planned emissions ++++++++++++>>>>>>> {item.MonthlyPlanned}");
+                double balance = (item.MonthlyPlanned * 1000) - item.ActualEmissions;
 
                 if(balance > 0)
                 {

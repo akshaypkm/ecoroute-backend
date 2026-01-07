@@ -199,6 +199,13 @@ namespace EcoRoute.Services
             
             int companyId = await _companyRepo.GetCompanyIdByName(companyName);
 
+            var companyRemainingCredits = await _companyRepo.GetCompanyRemainingCreditsByNameAsync(companyName);
+
+            if(companyRemainingCredits <= 0)
+            {
+                return (false,"insufficient emission credit balance, buy some credits for this month");
+            }
+
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
 
             var orderToDb = _mapper.Map<Order>(orderDto);
@@ -265,7 +272,6 @@ namespace EcoRoute.Services
 
         public bool CanFitOrder(OrderRequestDto order, TruckType truck)
         {
-            // Floor dimensions (orientation-aware)
             double itemL = order.OrderLength;
             double itemW = order.OrderWidth;
             double itemH = order.OrderHeight;
@@ -274,30 +280,25 @@ namespace EcoRoute.Services
             double truckW = truck.CargoWidthMeters;
             double truckH = truck.CargoHeightMeters;
 
-            // 1. Check base orientation
             bool fitsBase =
                 (itemL <= truckL && itemW <= truckW) ||
                 (itemW <= truckL && itemL <= truckW);
 
             if (!fitsBase) return false;
 
-            // 2. Items per layer (2D packing approx)
             int itemsPerRow = (int)(truckL / Math.Min(itemL, itemW));
             int itemsPerCol = (int)(truckW / Math.Max(itemL, itemW));
 
             int itemsPerLayer = Math.Max(1, itemsPerRow * itemsPerCol);
 
-            // 3. Required layers
             int layersNeeded = (int)Math.Ceiling(
                 (double)order.OrderTotalItems / itemsPerLayer
             );
 
-            // 4. Height feasibility
             double requiredHeight = layersNeeded * itemH;
 
             if (requiredHeight > truckH) return false;
 
-            // 5. Safety margin
             return requiredHeight <= truckH * 0.9;
         }
 

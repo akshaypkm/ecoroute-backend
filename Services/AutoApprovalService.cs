@@ -39,7 +39,7 @@ namespace EcoRoute.Services
             Console.WriteLine($"########### TRANSPORT COMPANY ID : {transportCompanyId} ########333");
 
             Console.WriteLine($"########### ORDERS COUNT : {orders.Count} ########333");
-            if(orders.Count < 2)
+            if(orders.Count < 5)
             {
                 Console.WriteLine("less than two!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 return;

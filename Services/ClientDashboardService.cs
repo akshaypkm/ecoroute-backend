@@ -270,6 +270,10 @@ namespace EcoRoute.Services
             {
                 marketPressure = marketDeficitTonnes / marketSupplyTonnes;
             }
+
+            Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET DEFICIT TONNES : {marketDeficitTonnes}");
+            Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET SUPPLY TONNES : {marketSupplyTonnes}");
+            Console.WriteLine("------------------------------------------");
             Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET PRESSURE : {marketPressure}");
             double creditMarketPrice = basePrice * marketPressure;
             Console.WriteLine($"%%%%%%%%%%%%THIS IS THE MARKET PRICE : {creditMarketPrice}");

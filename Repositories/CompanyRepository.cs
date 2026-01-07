@@ -15,7 +15,7 @@ namespace EcoRoute.Repositories
 
         Task SaveChangesAsync();
 
-        Task<double> GetCompanyCreditsByNameAsync(string CompanyName);
+        Task<double> GetCompanyRemainingCreditsByNameAsync(string CompanyName);
 
         Task<int> GetCompanyIdByName(string CompanyName);
 
@@ -68,10 +68,10 @@ namespace EcoRoute.Repositories
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<double> GetCompanyCreditsByNameAsync(string CompanyName)
+        public async Task<double> GetCompanyRemainingCreditsByNameAsync(string CompanyName)
         {
             return await dbContext.Companies.Where(c => c.CompanyName == CompanyName)
-                                            .Select(c => c.CompanyCredits).FirstOrDefaultAsync();
+                                            .Select(c => c.RemainingCredits).FirstOrDefaultAsync();
         }
 
         public async Task<int> GetCompanyIdByName(string CompanyName)

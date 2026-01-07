@@ -495,7 +495,6 @@ namespace EcoRoute.Services
 
             foreach (var item in items)
             {
-                // 1. Check base orientation
                 bool fitsBase =
                     (item.Length <= truckL && item.Width <= truckW) ||
                     (item.Width  <= truckL && item.Length <= truckW);
@@ -503,7 +502,6 @@ namespace EcoRoute.Services
                 if (!fitsBase)
                     return false;
 
-                // 2. Compute best floor fit (orientation-aware)
                 double floorL = Math.Max(item.Length, item.Width);
                 double floorW = Math.Min(item.Length, item.Width);
 
@@ -512,18 +510,14 @@ namespace EcoRoute.Services
 
                 int itemsPerLayer = Math.Max(1, itemsPerRow * itemsPerCol);
 
-                // 3. Layers needed for this item type
                 int layersNeeded =
                     (int)Math.Ceiling((double)item.Quantity / itemsPerLayer);
 
                 usedHeight += layersNeeded * item.Height;
 
-                // 4. Early exit
                 if (usedHeight > truckH)
                     return false;
             }
-
-            // 5. Safety margin
             return usedHeight <= truckH * 0.9;
         }
 
