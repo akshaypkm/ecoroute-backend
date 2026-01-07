@@ -23,9 +23,7 @@ namespace EcoRoute.Utils
         {
             if (orders == null || !orders.Any()) return null;
 
-            // -----------------------------
-            // STEP 1: Build PICKUP stops
-            // -----------------------------
+            
             var pickupStops = orders.Select(o => new RouteStopDto
             {
                 OrderId = o.OrderId,
@@ -35,9 +33,7 @@ namespace EcoRoute.Utils
                 Lng = o.OriginRP.Lng
             }).ToList();
 
-            // -----------------------------
-            // STEP 2: Optimize PICKUPS only (TSP is VALID here)
-            // -----------------------------
+           
             var pickupPoints = pickupStops
                 .Select(p => new RoutePoint { Lat = p.Lat, Lng = p.Lng })
                 .ToList();
@@ -49,9 +45,6 @@ namespace EcoRoute.Utils
                 .Select(i => pickupStops[i])
                 .ToList();
 
-            // -----------------------------
-            // STEP 3: Build DROPS
-            // -----------------------------
             var dropStops = orders.Select(o => new RouteStopDto
             {
                 OrderId = o.OrderId,
@@ -61,9 +54,6 @@ namespace EcoRoute.Utils
                 Lng = o.DestinationRP.Lng
             }).ToList();
 
-            // -----------------------------
-            // STEP 4: Order DROPS from last pickup (NO BACKTRACKING)
-            // -----------------------------
             var lastPickup = orderedPickups.Last();
 
             var orderedDrops = dropStops
@@ -72,18 +62,13 @@ namespace EcoRoute.Utils
                     d.Lat, d.Lng))
                 .ToList();
 
-            // -----------------------------
-            // STEP 5: Assign SEQUENCE
-            // -----------------------------
             int seq = 1;
             foreach (var p in orderedPickups) p.Sequence = seq++;
             foreach (var d in orderedDrops) d.Sequence = seq++;
 
             var finalStops = orderedPickups.Concat(orderedDrops).ToList();
 
-            // -----------------------------
-            // STEP 6: Generate POLYLINE
-            // -----------------------------
+            
             var routePoints = finalStops
                 .Select(s => new RoutePoint { Lat = s.Lat, Lng = s.Lng })
                 .ToList();
@@ -99,7 +84,6 @@ namespace EcoRoute.Utils
 
 
 
-        // --- PRIVATE HELPER METHODS ---
 
         private async Task<RoutePoint> GeocodeAsync(string address)
         {

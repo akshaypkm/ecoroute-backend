@@ -89,7 +89,7 @@ namespace EcoRoute.Services
                 }
                 else
                 {
-                    shipmentCode = "-"; // or "Pending"
+                    shipmentCode = "-"; 
                 }
             
                 var orderHistoryDto = _mapper.Map<OrderHistoryDto>(order);
